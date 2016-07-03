@@ -24,6 +24,7 @@ type logEntry struct {
 const port = 18192
 
 func main() {
+	fmt.Println("Serving logs")
 	broker := NewBroker()
 
 	go func() {
@@ -41,6 +42,13 @@ func main() {
 		}
 	}()
 
-	//Open(fmt.Sprintf("http://localhost:%d", port))
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), broker))
+	http.Handle("logs", broker)
+
+	http.Handle("ui", http.FileServer(http.Dir("./ui/dist")))
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "ui/dist/index.html")
+	})
+
+	Open(fmt.Sprintf("http://localhost:%d", port))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
 }
