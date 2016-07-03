@@ -42,12 +42,8 @@ func main() {
 		}
 	}()
 
-	http.Handle("logs", broker)
-
-	http.Handle("ui", http.FileServer(http.Dir("./ui/dist")))
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "ui/dist/index.html")
-	})
+	http.Handle("/logs/", broker)
+	http.Handle("/", http.FileServer(http.Dir("./ui/dist")))
 
 	Open(fmt.Sprintf("http://localhost:%d", port))
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
