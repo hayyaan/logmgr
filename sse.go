@@ -22,7 +22,7 @@ type Broker struct {
 	clients map[chan []byte]bool
 }
 
-// NewServer creates a new Broker for sending sse
+// NewBroker creates a new Broker for sending sse
 func NewBroker() (broker *Broker) {
 	// Instantiate a broker
 	broker = &Broker{
@@ -103,7 +103,7 @@ func (broker *Broker) listen() {
 
 			// We got a new event from the outside!
 			// Send event to all connected clients
-			for clientMessageChan, _ := range broker.clients {
+			for clientMessageChan := range broker.clients {
 				clientMessageChan <- event
 			}
 		}
